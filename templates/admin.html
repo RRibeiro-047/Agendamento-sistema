@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Agendamentos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .header-admin {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            border-top: none;
+            font-weight: 600;
+        }
+        .btn-refresh {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+        }
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-admin">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="mb-0">
+                        <i class="fas fa-calendar-check me-3"></i>
+                        Painel Administrativo
+                    </h1>
+                    <p class="mb-0 mt-2">Gerenciamento de Agendamentos</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <button onclick="location.reload()" class="btn btn-refresh btn-lg">
+                        <i class="fas fa-sync-alt me-2"></i>
+                        Atualizar
+                    </button>
+                    <a href="/" class="btn btn-light btn-lg ms-2">
+                        <i class="fas fa-home me-2"></i>
+                        Página Inicial
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-muted mb-2">Total de Agendamentos</h6>
+                            <div class="stats-number">{{ agendamentos|length if agendamentos else 0 }}</div>
+                        </div>
+                        <div class="ms-3">
+                            <i class="fas fa-calendar fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-muted mb-2">Hoje</h6>
+                            <div class="stats-number">0</div>
+                        </div>
+                        <div class="ms-3">
+                            <i class="fas fa-calendar-day fa-2x text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-muted mb-2">Esta Semana</h6>
+                            <div class="stats-number">{{ agendamentos|length if agendamentos else 0 }}</div>
+                        </div>
+                        <div class="ms-3">
+                            <i class="fas fa-calendar-week fa-2x text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Lista de Agendamentos
+                </h2>
+                <div>
+                    <span class="badge bg-success" id="last-update">
+                        <i class="fas fa-clock me-1"></i>
+                        Atualizado agora
+                    </span>
+                </div>
+            </div>
+
+            {% if agendamentos %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag me-1"></i> ID</th>
+                            <th><i class="fas fa-user me-1"></i> Nome</th>
+                            <th><i class="fas fa-cut me-1"></i> Serviço</th>
+                            <th><i class="fas fa-calendar me-1"></i> Data</th>
+                            <th><i class="fas fa-clock me-1"></i> Hora</th>
+                            <th><i class="fas fa-info-circle me-1"></i> Criado em</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in agendamentos %}
+                        <tr>
+                            <td><span class="badge bg-primary">{{ a[0] }}</span></td>
+                            <td><strong>{{ a[1] }}</strong></td>
+                            <td>{{ a[2] }}</td>
+                            <td>{{ a[3] }}</td>
+                            <td><span class="badge bg-info">{{ a[4] }}</span></td>
+                            <td><small class="text-muted">{{ a[5] if a|length > 5 else 'N/A' }}</small></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">Nenhum agendamento encontrado</h4>
+                <p class="text-muted">Os agendamentos aparecerão aqui quando os clientes fizerem reservas.</p>
+                <a href="/" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus me-2"></i>
+                    Fazer um Agendamento de Teste
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">© 2026 Sistema de Agendamentos. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Atualizar timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR');
+            document.getElementById('last-update').innerHTML = 
+                '<i class="fas fa-clock me-1"></i>Atualizado às ' + timeString;
+        }
+
+        // Auto-refresh a cada 30 segundos
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+
+        // Inicialização simples
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTimestamp();
+        });
+    </script>
+</body>
+</html>

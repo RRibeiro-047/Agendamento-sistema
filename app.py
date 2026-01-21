@@ -75,5 +75,32 @@ def agendar():
 with app.app_context():
     init_db()
 
+
+# Rota para o painel de administração
+@app.route("/admin")
+def admin():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Ordenar por data de criação, mais recentes primeiro
+        cursor.execute("""
+        SELECT id, nome, servico, data, hora, 
+               strftime('%d/%m/%Y %H:%M', data_criacao) as data_formatada 
+        FROM agendamentos 
+        ORDER BY data_criacao DESC
+        """)
+        
+        agendamentos = cursor.fetchall()
+        conn.close()
+
+        return render_template("admin.html", agendamentos=agendamentos)
+    
+    except sqlite3.Error as e:
+        return f"Erro ao acessar o banco de dados: {str(e)}", 500
+    except Exception as e:
+        return f"Ocorreu um erro: {str(e)}", 500
+
+
 if __name__ == "__main__":
     app.run(debug=True)
